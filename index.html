@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <!-- Never leak the one-time code to another site via the Referer header. -->
+  <meta name="referrer" content="no-referrer">
+  <title>Returning to Wealth</title>
+  <style>
+    :root { color-scheme: light dark; font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+    body { margin: 0; min-height: 100vh; display: grid; place-items: center; padding: 24px; box-sizing: border-box; text-align: center; }
+    main { max-width: 360px; }
+    p { opacity: .75; line-height: 1.5; }
+    a.button { display: inline-block; padding: 14px 28px; border-radius: 999px; background: #1b7f3b; color: #fff; text-decoration: none; font-weight: 600; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Returning to Wealth…</h1>
+    <p id="message">If the app doesn't open by itself, tap the button below.</p>
+    <p><a id="open" class="button" href="#">Open Wealth</a></p>
+  </main>
+  <script>
+    // Hands the bank's response (code + state, or error) back to the app through its custom scheme.
+    // Nothing is stored, logged or sent anywhere else.
+    (function () {
+      var query = window.location.search;
+      var button = document.getElementById("open");
+      if (!query) {
+        document.getElementById("message").textContent =
+          "This page only hands your bank's response back to the Wealth app.";
+        button.style.display = "none";
+        return;
+      }
+      var target = "com.jackcolley.wealth://bank-callback" + query;
+      button.href = target;
+      // Drop the one-time code from the address bar and history before leaving.
+      history.replaceState(null, "", window.location.pathname);
+      window.location.replace(target);
+    })();
+  </script>
+</body>
+</html>
